@@ -11,6 +11,10 @@ import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 
+from scipy.cluster.hierarchy import ClusterWarning
+from warnings import simplefilter
+simplefilter("ignore", ClusterWarning)
+
 
 
 # -----------------------FONCTIONS------------------------#
@@ -114,39 +118,39 @@ def main(dataFiles):
         listWithAllTaggedFingerprints.extend(listOfFingerprintsInFile2)
         listOfFingerprints = [stringLine for stringLine in listOfFingerprints if stringLine != ""] #Supprime les lignes vides
 
-        # Création de la matrice de distances
-        for fingerprint in listOfFingerprints:
-            listOfDistanceForOneFingerprint = []
-            for fingerprint2 in listOfFingerprints:
-                listOfDistanceForOneFingerprint.append(distance(fingerprint, fingerprint2))
-            listOfDistances.append(listOfDistanceForOneFingerprint)
+    # Création de la matrice de distances
+    for fingerprint in listOfFingerprints:
+        listOfDistanceForOneFingerprint = []
+        for fingerprint2 in listOfFingerprints:
+            listOfDistanceForOneFingerprint.append(distance(fingerprint, fingerprint2))
+        listOfDistances.append(listOfDistanceForOneFingerprint)
 
-        # Création du modèle
-        model = AgglomerativeClustering(distance_threshold = None, n_clusters = numberOfCluster)  # n_cluster= number of cluster to find, if not none distance must be none.
-        model = model.fit(listOfDistances)
+    # Création du modèle
+    model = AgglomerativeClustering(distance_threshold = None, n_clusters = numberOfCluster)  # n_cluster= number of cluster to find, if not none distance must be none.
+    model = model.fit(listOfDistances)
 
-        # Affichage
+    # Affichage
+    """
+    plt.title("Dendogramme de Regroupement Hierarchique")
+    plot_dendrogram(model, truncate_mode="level", p=10) # plot the top ten levels of the dendrogram
+    plt.xlabel("Nombre de points dans un noeud (ou index de point s'il n'y a pas de parenthèse)")
+    plt.ylabel("Distance entre les clusters")
+    plt.show()
+    print(model.n_clusters_)
+    print(model.labels_)
         """
-        plt.title("Dendogramme de Regroupement Hierarchique")
-        plot_dendrogram(model, truncate_mode="level", p=10) # plot the top ten levels of the dendrogram
-        plt.xlabel("Nombre de points dans un noeud (ou index de point s'il n'y a pas de parenthèse)")
-        plt.ylabel("Distance entre les clusters")
-        plt.show()
-        print(model.n_clusters_)
-        print(model.labels_)
-        """
 
-        # Création de la liste contenant les différents clusters
-        for indexCluster in range(numberOfCluster):
-            cluster = [[listOfFingerprints[indexFingerprint], indexFingerprint] for indexFingerprint in range(len(listOfFingerprints)) if model.labels_[indexFingerprint] == indexCluster]
-            listOfClusters.append(cluster)
+    # Création de la liste contenant les différents clusters
+    for indexCluster in range(numberOfCluster):
+        cluster = [[listOfFingerprints[indexFingerprint], indexFingerprint] for indexFingerprint in range(len(listOfFingerprints)) if model.labels_[indexFingerprint] == indexCluster]
+        listOfClusters.append(cluster)
 
-        getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 'fingerprintRef.json')
+    getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 'fingerprintRef.json')
 
 if __name__ == '__main__':
     dataFiles = sys.argv[1:]
     main(dataFiles)
-    os.system("cat fingerprintRef.json | jq")
+    #os.system("cat fingerprintRef.json | jq")
 
 
 
