@@ -205,7 +205,12 @@ def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, number
     return data
 
 def analyseFile(aFileOfFingerprintsToAnalyse, aListeOfReferenceFingerprint):
-    pass
+     # Formatage des empreintes
+    with open(dataFile, "r") as file:
+        listOfFingerprintsInFile = [line.replace('\n', '') for line in file]
+        listOfFingerprints = sorted(set(listOfFingerprintsInFile), key = listOfFingerprintsInFile.index)  # Retire les doublons ET prévserve l'ordre
+    listOfFingerprints = [stringLine for stringLine in listOfFingerprints if stringLine != ""] #Supprime les lignes vides
+     # A CONTINUER 
 
 if __name__ == '__main__':
     dataFiles = sys.argv[1:]
