@@ -67,7 +67,7 @@ def plot_dendrogram(model, **kwargs):
 
 # Write the useful information into a JSON file
 def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, outputFileName):
-
+    alphabet = "ABCDEFGH"
     data = {
         'clusters' : []
     }
@@ -86,7 +86,7 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
             'idFingerprintRef' : distanceMin[1],
             'fingerprintRef' : distanceMin[0],
             'distanceRef' : maximum,
-            'distancesReferences' : [],
+            'distancesReferences' : {},
             'listePoints' : {}
         })
         n+=1
@@ -95,7 +95,6 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
         a=0
         for z in range (3): # Prends les trois premiers points du cluster pour donner la forme generale. 
             distances = {}
-            alphabet = "ABCDEFGH"
             count = 0
             for m in range(numberOfCluster): # ajoute distance autres cluster rapport aux points selectiones
                 try:
@@ -105,9 +104,11 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
                     a=1
             if a!=1:
                 data['clusters'][i]['listePoints']['point'+str(z)]=(distances)
-        
+                
+        dic={}
         for p in range(numberOfCluster): # Ajoute distance autres points de reference compare au cluster
-            data['clusters'][i]['distancesReferences'].append(listOfDistances[data['clusters'][i]['idFingerprintRef']][data['clusters'][p]['idFingerprintRef']])
+            dic[alphabet[p]] = listOfDistances[data['clusters'][i]['idFingerprintRef']][data['clusters'][p]['idFingerprintRef']]
+        data['clusters'][i]['distancesReferences']=dic
 
     if (outputFileName):
         with open(outputFileName, 'w') as outfile:
@@ -173,6 +174,7 @@ def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, number
             listOfDistanceForOneFingerprint.append(distance(fingerprint, fingerprint2))
         listOfDistances.append(listOfDistanceForOneFingerprint)
 
+    print(listOfDistances)
     # Création du modèle
     model = AgglomerativeClustering(distance_threshold = distanceThresh, n_clusters = numberCluster)  # n_cluster= number of cluster to find, if not none distance must be none.
     model = model.fit(listOfDistances)
