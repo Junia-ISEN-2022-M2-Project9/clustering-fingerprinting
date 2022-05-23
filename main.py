@@ -1,6 +1,6 @@
 import argparse
 
-from fingerprintClustering import createCluster
+from fingerprintClustering import createCluster, analyseFile
 
 #----------------------------PARSING ARGUMENTS---------------------------------#
 parser = argparse.ArgumentParser()
@@ -24,10 +24,13 @@ enableStats = args.stats
 
 if numberOfCluster != None:
     numberOfCluster = int(numberOfCluster)
-    
+
 if distanceThreshold != None:
     distanceThreshold = int(distanceThreshold)
 
 #---------------------------------CLUSTERING-----------------------------------#
-clustersData = createCluster(dataFiles, outputFileName, enableStats, distanceThreshold, numberOfCluster)
 
+# clustersData = createCluster(dataFiles, outputFileName, enableStats, distanceThreshold, numberOfCluster)
+sampleData = analyseFile("./nmapScriptMethods", "./hyaz2.json")
+
+#fonctionGraphique(clustersdata, sampleData)

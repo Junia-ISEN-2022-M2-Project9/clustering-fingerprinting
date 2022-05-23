@@ -16,7 +16,7 @@ from scipy.cluster.hierarchy import ClusterWarning
 from warnings import simplefilter
 simplefilter("ignore", ClusterWarning)
 
-
+# Fp = Fingerprint
 
 # -----------------------FONCTIONS------------------------#
 
@@ -71,7 +71,7 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
     data = {
         'clusters' : []
     }
-    
+
     n=0
     for cluster in listOfClusters:
         distanceMin = [999999999999999,9999999999999999999999, 9999999999]
@@ -90,10 +90,10 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
             'listePoints' : {}
         })
         n+=1
-    
+
     for i in range(numberOfCluster):
-        a=0
-        for z in range (3): # Prends les trois premiers points du cluster pour donner la forme generale. 
+        a = 0
+        for z in range(3): # Prends les trois premiers points du cluster pour donner la forme generale.
             distances = {}
             count = 0
             for m in range(numberOfCluster): # ajoute distance autres cluster rapport aux points selectiones
@@ -101,14 +101,14 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
                     distances[alphabet[count]] = (listOfDistances[listOfClusters[i][z][1]][data['clusters'][m]['idFingerprintRef']])
                     count += 1
                 except IndexError:
-                    a=1
-            if a!=1:
+                    a = 1
+            if a != 1:
                 data['clusters'][i]['listePoints']['point'+str(z)]=(distances)
-                
-        dic={}
+
+        dic = {}
         for p in range(numberOfCluster): # Ajoute distance autres points de reference compare au cluster
             dic[alphabet[p]] = listOfDistances[data['clusters'][i]['idFingerprintRef']][data['clusters'][p]['idFingerprintRef']]
-        data['clusters'][i]['distancesReferences']=dic
+        data['clusters'][i]['distancesReferences'] = dic
 
     if (outputFileName):
         with open(outputFileName, 'w') as outfile:
@@ -145,6 +145,12 @@ def showStats(model, listOfFingerprints, listWithAllTaggedFingerprints):
         for res in results:
             print(res)
 
+def formatFpFile(fingerprintFile):
+    with open(fingerprintFile, "r") as file:
+        listOfFingerprintsInFile = [line.replace('\n', '') for line in file]
+        listOfFingerprintsInFile = sorted(set(listOfFingerprintsInFile), key = listOfFingerprintsInFile.index)  # Retire les doublons ET prévserve l'ordre
+        listOfFingerprintsInFile = [stringLine for stringLine in listOfFingerprintsInFile if stringLine != ""] #Supprime les lignes vides
+    return listOfFingerprintsInFile
 
 # -----------------------------------MAIN--------------------------------------#
 
@@ -157,15 +163,12 @@ def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, number
 
     # Formatage des empreintes
     for dataFile in dataFiles:
-        with open(dataFile, "r") as file:
-            listOfFingerprintsInFile = [line.replace('\n', '') for line in file]
-            listOfFingerprintsInFile = sorted(set(listOfFingerprintsInFile), key = listOfFingerprintsInFile.index)  # Retire les doublons ET prévserve l'ordre
-            listOfFingerprintsInFile2 = []
-            for y in range(len(listOfFingerprintsInFile)):
-                listOfFingerprintsInFile2.append([listOfFingerprintsInFile[y], dataFile])
+        listOfFingerprintsInFile = formatFingerprintFile(dataFile)
+        listOfFingerprintsInFile2 = []
+        for y in range(len(listOfFingerprintsInFile)):
+            listOfFingerprintsInFile2.append([listOfFingerprintsInFile[y], dataFile])
         listOfFingerprints.extend(listOfFingerprintsInFile)
         listWithAllTaggedFingerprints.extend(listOfFingerprintsInFile2)
-        listOfFingerprints = [stringLine for stringLine in listOfFingerprints if stringLine != ""] #Supprime les lignes vides
 
     # Création de la matrice de distances
     for fingerprint in listOfFingerprints:
@@ -204,13 +207,16 @@ def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, number
 
     return data
 
-def analyseFile(aFileOfFingerprintsToAnalyse, aListeOfReferenceFingerprint):
-     # Formatage des empreintes
-    with open(dataFile, "r") as file:
-        listOfFingerprintsInFile = [line.replace('\n', '') for line in file]
-        listOfFingerprints = sorted(set(listOfFingerprintsInFile), key = listOfFingerprintsInFile.index)  # Retire les doublons ET prévserve l'ordre
-    listOfFingerprints = [stringLine for stringLine in listOfFingerprints if stringLine != ""] #Supprime les lignes vides
-     # A CONTINUER 
+def analyseFile(sampleDataFile, clusterDataFile):
+    # Fichier clusterData = fingerprints en input à analyser
+    # Fichier reference = fingerprints référentes des clusters
+
+    sampleFpList = formatFpFile(sampleDataFile)
+    with open(clusterDataFile, "r") as file:
+        referencesFpList = json.load(file)
+        result = [[distance(fp, referencesFpList["clusters"][idxFpRef]["fingerprintRef"]) for idxFpRef in range(len(referencesFpList["clusters"]))] for fp in sampleFpList]
+    print(result)
+
 
 if __name__ == '__main__':
     dataFiles = sys.argv[1:]
