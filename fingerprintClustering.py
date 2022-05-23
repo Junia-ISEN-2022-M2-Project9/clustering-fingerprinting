@@ -71,7 +71,8 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
     data = {
         'clusters' : []
     }
-
+    
+    n=0
     for cluster in listOfClusters:
         distanceMin = [999999999999999,9999999999999999999999, 9999999999]
         for fingerprint in cluster:
@@ -81,15 +82,28 @@ def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, 
         maximum = max([listOfDistances[fingerprint[1]][j] for j in list(zip(*cluster))[1]])
 
         data['clusters'].append({ #Ajout dans le fichier Json
-            'name' : dataFile,
+            'name' : "cluster"+str(n),
             'idFingerprintRef' : distanceMin[1],
             'fingerprintRef' : distanceMin[0],
             'distanceRef' : maximum,
-            'distancesReferences' : []
+            'distancesReferences' : [],
+            'listePoints' : []
         })
-
+        n+=1
+    
     for i in range(numberOfCluster):
-        for p in range(numberOfCluster):
+        a=0
+        for z in range (3): # Prends les trois premiers points du cluster pour donner la forme generale. 
+            distances = []
+            for m in range(numberOfCluster): # ajoute distance autres cluster rapport aux points selectiones
+                try:
+                    distances.append(listOfDistances[listOfClusters[i][z][1]][data['clusters'][m]['idFingerprintRef']])
+                except IndexError:
+                    a=1
+            if a!=1:
+                data['clusters'][i]['listePoints'].append(distances)
+        
+        for p in range(numberOfCluster): # Ajoute distance autres points de reference compare au cluster
             data['clusters'][i]['distancesReferences'].append(listOfDistances[data['clusters'][i]['idFingerprintRef']][data['clusters'][p]['idFingerprintRef']])
 
     if (outputFileName):
@@ -124,12 +138,14 @@ def showStats(model, listOfFingerprints, listWithAllTaggedFingerprints):
         for key in stats:
             stats[key] = str(round(stats[key]/clusterSize*100, 2)) + "%"
         print(stats)
+        for res in results:
+            print(res)
+
 
 # -----------------------------------MAIN--------------------------------------#
 
-def createCluster(dataFiles, outputFileName, enableStats):
+def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, numberCluster):
 
-    numberOfCluster = 2
     listWithAllTaggedFingerprints = []      # Liste contenant toutes les fingerprints et leur fichier associé
     listOfFingerprints = []                 # Liste contenant toutes les fingerprints
     listOfDistances = []                    # Chaque liste contient l'ensemble des distances par rapport a une empreinte.
@@ -155,8 +171,9 @@ def createCluster(dataFiles, outputFileName, enableStats):
         listOfDistances.append(listOfDistanceForOneFingerprint)
 
     # Création du modèle
-    model = AgglomerativeClustering(distance_threshold = None, n_clusters = numberOfCluster)  # n_cluster= number of cluster to find, if not none distance must be none.
+    model = AgglomerativeClustering(distance_threshold = distanceThresh, n_clusters = numberCluster)  # n_cluster= number of cluster to find, if not none distance must be none.
     model = model.fit(listOfDistances)
+    numberOfCluster=model.n_clusters_
 
     # Affichage
     """
@@ -170,7 +187,7 @@ def createCluster(dataFiles, outputFileName, enableStats):
         """
 
     # Création de la liste contenant les différents clusters
-    for indexCluster in range(numberOfCluster):
+    for indexCluster in range(numberOfCluster): #REMPLACER NUMBERCLUSTER PAR LA DISTANCE DANS L OBJET
         cluster = [[listOfFingerprints[indexFingerprint], indexFingerprint] for indexFingerprint in range(len(listOfFingerprints)) if model.labels_[indexFingerprint] == indexCluster]
         listOfClusters.append(cluster)
 
