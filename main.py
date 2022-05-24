@@ -14,6 +14,8 @@ parser.add_argument("--threshold", "-t",default=None, help="Distance max between
 
 parser.add_argument("--json", "-j", default="./output.json", help="Specify an output file to get clusters data at json format")
 
+parser.add_argument("--distance-algorithm", "-da", default="SM", help="Uses the sequence matcher distance by default, ")
+
 
 args = parser.parse_args()
 numberOfCluster = args.clusters
@@ -31,6 +33,6 @@ if distanceThreshold != None:
 #---------------------------------CLUSTERING-----------------------------------#
 
 clustersData = createCluster(dataFiles, outputFileName, enableStats, distanceThreshold, numberOfCluster)
-#sampleData = analyseFile("./nmapScriptMethods", "./hyaz2.json")
+#sampleData = analyseFile("./maliciousUser", "./superJson.json")
 #print(sampleData)
 #fonctionGraphique(clustersdata, sampleData)

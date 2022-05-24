@@ -22,6 +22,7 @@ simplefilter("ignore", ClusterWarning)
 
 
 # Fonction de calcul de distance avec sequenceMatcher
+
 def distance(f1, f2):
     return (1 - SequenceMatcher(None, *sorted((f1, f2))).ratio())  # isjunk=None (no element ignored), .ratio give float between [0,1]
 
@@ -29,15 +30,19 @@ def distance(f1, f2):
 # Fonction de calcul de distance avec jellyfish
 
 # Uncomment to use levenstein distance
+
 """
 def distance(f1,f2):
     return(jellyfish.levenshtein_distance(f1,f2))
 """
+
 # Uncomment to use jaro distance
+
 """
 def distance(f1,f2):
     return(jellyfish.jaro_distance(f1,f2))
 """
+
 # Uncomment to use damerau levenstein distance
 """
 def distance(f1,f2):
@@ -67,7 +72,7 @@ def plot_dendrogram(model, **kwargs):
 
 # Write the useful information into a JSON file
 def getClustersData(numberOfCluster, listOfClusters, listOfDistances, dataFile, outputFileName):
-    alphabet = "ABCDEFGH"
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     data = {
         'clusters' : []
     }
@@ -143,8 +148,8 @@ def showStats(model, listOfFingerprints, listWithAllTaggedFingerprints):
             stats[key] = str(round(stats[key]/clusterSize*100, 2)) + "%"
         print(stats)
         print('Number of fingerprints in this cluster: ',clusterSize)
-        for res in results:
-            print(res)
+        #for res in results:
+            #print(res)
 
 def formatFpFile(fingerprintFile):
     with open(fingerprintFile, "r") as file:
@@ -177,8 +182,6 @@ def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, number
         for fingerprint2 in listOfFingerprints:
             listOfDistanceForOneFingerprint.append(distance(fingerprint, fingerprint2))
         listOfDistances.append(listOfDistanceForOneFingerprint)
-
-    print(listOfDistances)
     # Création du modèle
     model = AgglomerativeClustering(distance_threshold = distanceThresh, n_clusters = numberCluster)  # n_cluster= number of cluster to find, if not none distance must be none.
     model = model.fit(listOfDistances)
