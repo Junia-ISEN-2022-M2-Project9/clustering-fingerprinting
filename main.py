@@ -30,7 +30,7 @@ if distanceThreshold != None:
 
 #---------------------------------CLUSTERING-----------------------------------#
 
-# clustersData = createCluster(dataFiles, outputFileName, enableStats, distanceThreshold, numberOfCluster)
-sampleData = analyseFile("./nmapScriptMethods", "./hyaz2.json")
-
+clustersData = createCluster(dataFiles, outputFileName, enableStats, distanceThreshold, numberOfCluster)
+#sampleData = analyseFile("./nmapScriptMethods", "./hyaz2.json")
+#print(sampleData)
 #fonctionGraphique(clustersdata, sampleData)

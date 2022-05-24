@@ -142,6 +142,7 @@ def showStats(model, listOfFingerprints, listWithAllTaggedFingerprints):
         for key in stats:
             stats[key] = str(round(stats[key]/clusterSize*100, 2)) + "%"
         print(stats)
+        print('Number of fingerprints in this cluster: ',clusterSize)
         for res in results:
             print(res)
 
@@ -163,7 +164,7 @@ def createCluster(dataFiles, outputFileName, enableStats, distanceThresh, number
 
     # Formatage des empreintes
     for dataFile in dataFiles:
-        listOfFingerprintsInFile = formatFingerprintFile(dataFile)
+        listOfFingerprintsInFile = formatFpFile(dataFile)
         listOfFingerprintsInFile2 = []
         for y in range(len(listOfFingerprintsInFile)):
             listOfFingerprintsInFile2.append([listOfFingerprintsInFile[y], dataFile])
