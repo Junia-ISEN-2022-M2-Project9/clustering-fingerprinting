@@ -28,7 +28,7 @@ if numberOfCluster != None:
     numberOfCluster = int(numberOfCluster)
 
 if distanceThreshold != None:
-    distanceThreshold = int(distanceThreshold)
+    distanceThreshold = int(float(distanceThreshold))
 
 #---------------------------------CLUSTERING-----------------------------------#
 
