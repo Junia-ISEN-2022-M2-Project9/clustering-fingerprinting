@@ -9,17 +9,18 @@ def formatFpFile(fingerprintFile):
     return listOfFingerprintsInFile
 
 
-def createFingerprint(pcapFiles, fpFiles, reportingMode):
+def createFingerprint(inputFiles, format, reportingMode):
+    if inputFiles == None:
+        raise NoEntrySpecified
+
     dictOfFingerprints = {}
 
-    if pcapFiles != None:
-        dictOfFingerprints.update({pcap : hfinger_analyze(pcap, reportingMode) for pcap in pcapFiles})
+    if format == "pcap":
+        dictOfFingerprints.update({pcap : hfinger_analyze(pcap, reportingMode) for pcap in inputFiles})
         for (key, value) in dictOfFingerprints.items():
              listOfFingerprints = [fp.get("fingerprint") for fp in value]
              dictOfFingerprints[key] = sorted(set(listOfFingerprints), key = listOfFingerprints.index)
-    if fpFiles != None:
-        dictOfFingerprints.update({file : formatFpFile(file) for file in fpFiles})
-    if pcapFiles == None and fpFiles == None:
-        raise NoEntrySpecified
+    elif format == "fingerprint":
+        dictOfFingerprints.update({file : formatFpFile(file) for file in inputFiles})
 
     return dictOfFingerprints

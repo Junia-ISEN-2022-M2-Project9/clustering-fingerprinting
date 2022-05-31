@@ -7,18 +7,18 @@ from clustering import createCluster, analyseFile
 parser = argparse.ArgumentParser(description = "Fingerprinting & Clustering")
 
 parser.add_argument(
-    "--pcap",
-    "-p",
-    nargs="+",
+    "--files",
+    "-f",
+    nargs = "+",
     default = None,
-    help = "Read a single or multiple pcap files",
+    help = "Read a single or multiple pcap or fingerprint files",
 )
 
 parser.add_argument(
-    "--fp",
-    "-f",
-    nargs = "+",
-    help = "Read a single or multiple files of fingerprints",
+    "--format",
+    default = "pcap",
+    choices = ["pcap", "fingerprint"],
+    help = "Choose the format between pcap (default) and fingerprint",
 )
 
 parser.add_argument(
@@ -74,13 +74,15 @@ parser.add_argument(
 parser.add_argument(
     "--graph",
     "-g",
+    nargs = "+",
     help = "Get a graphical representation of fingerprints. You can precise a pcap to analyze",
 )
 
 # Variable renaming
 args = parser.parse_args()
-pcapFiles = args.pcap
-fpFiles = args.fp
+
+inputFiles = args.files
+format = args.format
 numberOfCluster = args.clusters
 distanceThreshold = args.threshold
 distanceAlgorithm = args.distance_algorithm
@@ -94,7 +96,7 @@ distanceThreshold = int(distanceThreshold) if distanceThreshold != None else Non
 
 #-------------------------------FINGERPRINTING---------------------------------#
 
-dictOfFingerprints = createFingerprint(pcapFiles, fpFiles, reportingMode)
+dictOfFingerprints = createFingerprint(inputFiles, format, reportingMode)
 
 #---------------------------------CLUSTERING-----------------------------------#
 
@@ -103,8 +105,8 @@ clustersData = createCluster(dictOfFingerprints, outputFileName, enableStats, di
 #----------------------------------GRAPHICS------------------------------------#
 
 if userFile:
-    listOfUserFingerprints = formatFpFile(userFile)
-    userData = analyseFile(listOfUserFingerprints, clusterData, distanceAlgorithm)
+    listOfUserFingerprints = createFingerprint(userFile, format, reportingMode)
+    userData = analyseFile(listOfUserFingerprints, clustersData, distanceAlgorithm)
     print(userData)
 #sampleData = analyseFile("./maliciousUser", "./superJson.json")
 #fonctionGraphique(clustersdata, sampleData)
