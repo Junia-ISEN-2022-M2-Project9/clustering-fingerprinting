@@ -14,12 +14,19 @@ You can also analyse
 
 ### Option descriptions
 -h : Display the help 
+
 --files : add the fingerprint files to analyse after this flag
+
 --pcap : add the pcap files to be analysed.
+
 --stats : print the output in the terminal with full verbosity
+
 --clusters : number of cluster to create (this option or --threshold needs to be set)
+
 --threshold : maximum distance inside a cluster
+
 --json : output to json to be reused
+
 --distance-algorithm : select a distance type between ( _sequencematcher_(default), _levenstein_, _jaro_)
 
 ### Usage example
