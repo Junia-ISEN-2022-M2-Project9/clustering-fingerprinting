@@ -15,7 +15,7 @@ There are several ways to determine if a pcap is malicious or not. First you can
 
 You can also analyse 
 
-### Option descriptions
+## Option descriptions
 **-h** : Display the help 
 
 **--files** : add the fingerprint files to analyse after this flag
@@ -32,7 +32,7 @@ You can also analyse
 
 **--distance-algorithm** : select a distance type between ( _sequencematcher_(default), _levenstein_, _jaro_)
 
-### Usage example
+## Usage example
 The following line is lauching the program asking for a stat output (all the clusters with the file from the fingerprints and their numbers), the files to analyse are given after the _--files_ flag. The clusters are set to have a maximum distance of 3. 
 > python3 main.py --files pcap/xss pcap/sqlmap pcap/maliciousUser pcap/burp_bruteforce pcap/legitime -t 3 --stats
 ![Pyplot graph](result_exemple.png)
@@ -43,12 +43,11 @@ The following line asks for a json output. The Json file can then be used as a r
 
 
 
-### Development
+## Development
 
 - clustering
     - [x] Convert pcap to txt file containing fingerprints. 
     - [x] Create clusters from fingerprint files.
-    - [x] 
     - [ ] Real time clustering 
 - output
     - [x] Propose a Json outoput to avoid recalculating the clusters
