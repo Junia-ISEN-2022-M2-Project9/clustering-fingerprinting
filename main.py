@@ -1,38 +1,110 @@
 import argparse
 
-from fingerprintClustering import createCluster, analyseFile
+from fingerprinting import createFingerprint, formatFpFile
+from clustering import createCluster, analyseFile
 
 #----------------------------PARSING ARGUMENTS---------------------------------#
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description = "Fingerprinting & Clustering")
 
-parser.add_argument("--files", "-f", nargs="+", help="Files of fingerprint")
-parser.add_argument("--pcap", "-p", help="Pcap files")
-parser.add_argument("--stats", "-s", help="Display stats", action="store_true")
+parser.add_argument(
+    "--pcap",
+    "-p",
+    nargs="+",
+    default = None,
+    help = "Read a single or multiple pcap files",
+)
 
-parser.add_argument("--clusters", "-c",default=None, help="Number of clusters")
-parser.add_argument("--threshold", "-t",default=None, help="Distance max between two fingerprints in a cluster")
+parser.add_argument(
+    "--fp",
+    "-f",
+    nargs = "+",
+    help = "Read a single or multiple files of fingerprints",
+)
 
-parser.add_argument("--json", "-j", default="./output.json", help="Specify an output file to get clusters data at json format")
+parser.add_argument(
+    "-m",
+    "--mode",
+    type = int,
+    default = 2,
+    choices = [0, 1, 2, 3, 4],
+    help = "Fingerprint report mode. "
+    "\n0 - similar number of collisions and fingerprints as mode 2, but using fewer features, "
+    "\n1 - representation of all designed features, but a little more collisions than modes 0, 2, and 4, "
+    "\n2 - optimal (the default mode), "
+    "\n3 - the lowest number of generated fingerprints, but the highest number of collisions, "
+    "\n4 - the highest fingerprint entropy, but slightly more fingerprints than modes 0-2",
+)
 
-parser.add_argument("--distance-algorithm", "-da", default="SM", help="Uses the sequence matcher distance by default, ")
+parser.add_argument(
+    "--clusters",
+    "-c",
+    default = None,
+    help = "Number of clusters",
+)
 
+parser.add_argument(
+    "--threshold",
+    "-t",
+    default = None,
+    help = "Distance max between two fingerprints in a cluster",
+)
 
+parser.add_argument(
+    "--distance-algorithm",
+    "-da",
+    default = "sequence-matcher",
+    choices = ["sequence-matcher", "levenshtein", "jaro", "damerau-levenshtein"],
+    help = "Uses the sequence matcher distance by default, ",
+)
+
+parser.add_argument(
+    "--stats",
+    "-s",
+    help = "Display stats",
+    action = "store_true",
+)
+
+parser.add_argument(
+    "--json",
+    "-j",
+    default = "./output.json",
+    help = "Specify an output file to get clusters data at json format",
+)
+
+parser.add_argument(
+    "--graph",
+    "-g",
+    help = "Get a graphical representation of fingerprints. You can precise a pcap to analyze",
+)
+
+# Variable renaming
 args = parser.parse_args()
+pcapFiles = args.pcap
+fpFiles = args.fp
 numberOfCluster = args.clusters
 distanceThreshold = args.threshold
-dataFiles = args.files
+distanceAlgorithm = args.distance_algorithm
+reportingMode = args.mode
 outputFileName = args.json
 enableStats = args.stats
+userFile = args.graph
 
-if numberOfCluster != None:
-    numberOfCluster = int(numberOfCluster)
+numberOfCluster = int(numberOfCluster) if numberOfCluster != None else None
+distanceThreshold = int(distanceThreshold) if distanceThreshold != None else None
 
-if distanceThreshold != None:
-    distanceThreshold = int(distanceThreshold)
+#-------------------------------FINGERPRINTING---------------------------------#
+
+dictOfFingerprints = createFingerprint(pcapFiles, fpFiles, reportingMode)
 
 #---------------------------------CLUSTERING-----------------------------------#
 
-clustersData = createCluster(dataFiles, outputFileName, enableStats, distanceThreshold, numberOfCluster)
+clustersData = createCluster(dictOfFingerprints, outputFileName, enableStats, distanceThreshold, numberOfCluster, distanceAlgorithm)
+
+#----------------------------------GRAPHICS------------------------------------#
+
+if userFile:
+    listOfUserFingerprints = formatFpFile(userFile)
+    userData = analyseFile(listOfUserFingerprints, clusterData, distanceAlgorithm)
+    print(userData)
 #sampleData = analyseFile("./maliciousUser", "./superJson.json")
-#print(sampleData)
 #fonctionGraphique(clustersdata, sampleData)

@@ -145,7 +145,10 @@ def commandline_run():
             sys.exit(1)
         else:
             results = run_tshark(args.file, args.mode, tshark_exec, tshark_ver)
-            if args.output_path is not None:
+            if not results:
+                logger.warning("No HTTP requests can be used")
+                print("No HTTP requests can be used")
+            elif args.output_path is not None:
                 write_results_to_file(args.file, args.output_path, results)
             else:
                 print(json.dumps(results))
@@ -174,6 +177,7 @@ def commandline_run():
                 if args.output_path is not None:
                     write_results_to_file(cur_file, args.output_path, results)
                 else:
+                    pass
                     print(json.dumps(results))
         if no_pcaps_found_flag:
             print("No valid pcap files found in the directory")
