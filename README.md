@@ -24,7 +24,9 @@ Several steps are required in order to anaylse a file containing HTTP requests.
 
 **Create clusters from several pcap files**
 
-In order to compare several pcap files you need at first to convert those files into text files containing the HTTP fingerprints. This operation can be realised using the --pcap flag. 
+In order to compare several pcap files you need at first to convert those files into text files containing the HTTP fingerprints. This operation can be realised using the --pcap flag.**The programm will automatically remove the duplicated fingerprints when the fingerprint file is given to the clustering program. **
+
+
 Then it is possible to create clusters from those files, you can add the file containing the fingerprints with the --files flag. Then the --stats flag to get the printed results with many details. Finaly you need to set the -t (threshold) or -c (cluster),the cluster option indicates how many cluster you want, the threshold option indicates the size of the clusters to create. **Carefull, on and exactly one of the options -t and -c must be specified in order to work.** 
 
 
