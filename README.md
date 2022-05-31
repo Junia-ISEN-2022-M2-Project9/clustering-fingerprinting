@@ -1,19 +1,5 @@
 Classification des empreintes générées par hfinger grâce à l'algorithme KMeans de la librairie scikit-learn en python
 # clustering-fingerprinting
-Several steps are required in order to anaylse a file containing HTTP requests.
-
-
-**Create clusters from several pcap files**
-
-In order to compare several pcap files you need at first to convert those files into text files containing the HTTP fingerprints. This operation can be realised using the --pcap flag. 
-Then it is possible to create clusters from those files, you can add the file containing the fingerprints with the --files flag. Then the --stats flag to get the printed results with many details. Finaly you need to set the -t (threshold) or -c (cluster),the cluster option indicates how many cluster you want, the threshold option indicates the size of the clusters to create. **Carefull, on and exactly one of the options -t and -c must be specified in order to work.** 
-
-
-**Determine if a pcap contains malicious requests.**
-
-There are several ways to determine if a pcap is malicious or not. First you can use the method described above, create clusters based on a threshold and see if some requests of the analized pcap are in the same cluster than know malicious requests. 
-
-You can also analyse 
 
 ## Option descriptions
 **-h** : Display the help 
@@ -32,8 +18,28 @@ You can also analyse
 
 **--distance-algorithm** : select a distance type between ( _sequencematcher_(default), _levenstein_, _jaro_)
 
+## Global descriptions
+Several steps are required in order to anaylse a file containing HTTP requests.
+
+
+**Create clusters from several pcap files**
+
+In order to compare several pcap files you need at first to convert those files into text files containing the HTTP fingerprints. This operation can be realised using the --pcap flag. 
+Then it is possible to create clusters from those files, you can add the file containing the fingerprints with the --files flag. Then the --stats flag to get the printed results with many details. Finaly you need to set the -t (threshold) or -c (cluster),the cluster option indicates how many cluster you want, the threshold option indicates the size of the clusters to create. **Carefull, on and exactly one of the options -t and -c must be specified in order to work.** 
+
+
+**Determine if a pcap contains malicious requests.**
+
+There are several ways to determine if a pcap is malicious or not. First you can use the method described above, create clusters based on a threshold and see if some requests of the analized pcap are in the same cluster than know malicious requests. (First usage exemple) 
+
+The other way is to analyse graphicaly the pcap using the graphical module. 
+
+
 ## Usage example
-The following line is lauching the program asking for a stat output (all the clusters with the file from the fingerprints and their numbers), the files to analyse are given after the _--files_ flag. The clusters are set to have a maximum distance of 3. 
+The following line is lauching the program asking for a stat output (all the clusters with the file from the fingerprints and their numbers), the files to analyse are given after the _--files_ flag, so it is fingerprints files, with the following format:
+![Pyplot graph](fingerprintFileFormat.png)
+
+The clusters are set to have a maximum distance of 3. 
 > python3 main.py --files pcap/xss pcap/sqlmap pcap/maliciousUser pcap/burp_bruteforce pcap/legitime -t 3 --stats
 ![Pyplot graph](result_exemple.png)
 
