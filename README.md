@@ -117,8 +117,6 @@ cx^2+cy^2==ac^2 && (cx-ab)^2+cy^2==bc^2
 => else no solution
 ```
 
-### Usage example
-> display/doGraph.py -f superJson.json -p listPoints.json
 
 ### GIF
 You may clone the _GIF_ Github branch in order to generate a moving graph. For each user fingerprint (black cross) an image is generated. They will eventually be added to form a queue and generate a GIF.
