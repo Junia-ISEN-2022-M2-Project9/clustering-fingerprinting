@@ -186,9 +186,10 @@ def createCluster(dictOfFingerprints, outputFileName, enableStats, distanceThres
 
     return data
 
-def analyseFile(listOfUserFingerprints, clusterData, distanceAlgorithm):
+def analyseFile(dicOfUserFingerprints, clusterData, distanceAlgorithm):
     # Fichier clusterData = fingerprints en input à analyser
     # Fichier reference = fingerprints référentes des clusters
-
+    a=dicOfUserFingerprints.popitem()
+    listOfUserFingerprints=a[1]
     result = [[distance(distanceAlgorithm, fp, clusterData["clusters"][idxFpRef]["fingerprintRef"]) for idxFpRef in range(len(clusterData["clusters"]))] for fp in listOfUserFingerprints]
-    print(result)
+    return(result)

@@ -24,3 +24,4 @@ def createFingerprint(inputFiles, format, reportingMode):
         dictOfFingerprints.update({file : formatFpFile(file) for file in inputFiles})
 
     return dictOfFingerprints
+

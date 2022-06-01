@@ -2,6 +2,7 @@ import argparse
 
 from fingerprinting import createFingerprint, formatFpFile
 from clustering import createCluster, analyseFile
+from display.doGraph import displaygraph
 
 #----------------------------PARSING ARGUMENTS---------------------------------#
 parser = argparse.ArgumentParser(description = "Fingerprinting & Clustering")
@@ -107,6 +108,5 @@ clustersData = createCluster(dictOfFingerprints, outputFileName, enableStats, di
 if userFile:
     listOfUserFingerprints = createFingerprint(userFile, format, reportingMode)
     userData = analyseFile(listOfUserFingerprints, clustersData, distanceAlgorithm)
-    print(userData)
-#sampleData = analyseFile("./maliciousUser", "./superJson.json")
-#fonctionGraphique(clustersdata, sampleData)
+    displaygraph(clustersData,userData)
+    
