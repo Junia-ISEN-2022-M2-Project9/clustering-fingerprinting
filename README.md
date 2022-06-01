@@ -60,7 +60,7 @@ The clusters are set to have a maximum distance of 3.
 The following line display a graphic view of the clusters, comparing the file maliciousUser.
 >python3 main.py --stats --format fingerprint --files fingerprints/legitime fingerprints/sqlmap fingerprints/xss --clusters 2 --graph fingerprints/maliciousUser
 
-![Pyplot graph](graphicalResult.png)
+![Pyplot graph](gaphicalResult.png)
 
 The following line asks for a json output. The Json file can then be used as a reference of malicious request in order to be compared to unknown pcap files. 
 > python3 main.py --format fingerprint --files fingerprints/xss pcap/xxe fingerprints/ffuf fingerprints/sqlmap fingerprints/nmapScriptMethods fingerprints/burp_bruteforce -j superJson.json -t 3
